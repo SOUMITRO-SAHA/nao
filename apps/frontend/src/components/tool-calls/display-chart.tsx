@@ -153,7 +153,9 @@ export const DisplayChartToolCall = ({
 		}
 
 		const seriesJson = JSON.stringify(config.series);
-		const chartBlock = `<chart query_id="${escapeDoubleQuotedAttr(config.query_id)}" chart_type="${escapeDoubleQuotedAttr(config.chart_type)}" x_axis_key="${escapeDoubleQuotedAttr(config.x_axis_key)}" x_axis_type="${escapeDoubleQuotedAttr(config.x_axis_type ?? '')}" series='${escapeSingleQuotedAttr(seriesJson)}' title="${escapeDoubleQuotedAttr(config.title ?? '')}" />`;
+		const showDataLabelsAttr =
+			config.show_data_labels !== undefined ? ` show_data_labels="${String(config.show_data_labels)}"` : '';
+		const chartBlock = `<chart query_id="${escapeDoubleQuotedAttr(config.query_id)}" chart_type="${escapeDoubleQuotedAttr(config.chart_type)}" x_axis_key="${escapeDoubleQuotedAttr(config.x_axis_key)}" x_axis_type="${escapeDoubleQuotedAttr(config.x_axis_type ?? '')}" series='${escapeSingleQuotedAttr(seriesJson)}' title="${escapeDoubleQuotedAttr(config.title ?? '')}" ${showDataLabelsAttr} />`;
 		const newCode = latest.code.trimEnd() + '\n\n' + chartBlock;
 
 		addToStoryMutation.mutate({
@@ -216,6 +218,7 @@ export const DisplayChartToolCall = ({
 				series={config.series}
 				xAxisType={config.x_axis_type === 'number' ? 'number' : 'category'}
 				title={config.title}
+				showDataLabels={config.show_data_labels}
 			/>
 		</div>
 	);
@@ -230,6 +233,7 @@ export interface ChartDisplayProps {
 	series: displayChart.SeriesConfig[];
 	title?: string;
 	showGrid?: boolean;
+	showDataLabels?: boolean;
 }
 
 export const ChartDisplay = memo(function ChartDisplay({
@@ -241,6 +245,7 @@ export const ChartDisplay = memo(function ChartDisplay({
 	series,
 	title,
 	showGrid = true,
+	showDataLabels,
 }: ChartDisplayProps) {
 	const { visibleSeries, hiddenSeriesKeys, handleToggleSeriesVisibility } = useSeriesVisibility(series);
 
@@ -302,6 +307,7 @@ export const ChartDisplay = memo(function ChartDisplay({
 				colorFor,
 				labelFormatter: xAxisLabelFormatter,
 				showGrid,
+				showDataLabels,
 				margin: { top: 0, right: 0, bottom: 0, left: -18 },
 				children: [
 					<ChartTooltip
@@ -330,6 +336,7 @@ export const ChartDisplay = memo(function ChartDisplay({
 			colorFor,
 			xAxisLabelFormatter,
 			showGrid,
+			showDataLabels,
 			legendPayload,
 			handleToggleSeriesVisibility,
 			title,

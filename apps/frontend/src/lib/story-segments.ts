@@ -5,6 +5,7 @@ export interface ParsedChartBlock {
 	xAxisType: string | null;
 	series: Array<{ data_key: string; color: string; label?: string }>;
 	title: string;
+	showDataLabels?: boolean;
 }
 
 export interface ParsedTableBlock {
@@ -56,6 +57,8 @@ export function parseChartBlock(attrString: string): ParsedChartBlock | null {
 		});
 	}
 
+	const showDataLabels = attrs.show_data_labels === 'true';
+
 	return {
 		queryId: attrs.query_id,
 		chartType: attrs.chart_type,
@@ -63,6 +66,7 @@ export function parseChartBlock(attrString: string): ParsedChartBlock | null {
 		xAxisType: attrs.x_axis_type || null,
 		series,
 		title: attrs.title || '',
+		showDataLabels,
 	};
 }
 

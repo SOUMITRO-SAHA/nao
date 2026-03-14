@@ -10,6 +10,7 @@ interface ChartBlock {
 	xAxisType: string | null;
 	series: Array<{ data_key: string; color: string; label?: string }>;
 	title: string;
+	showDataLabels?: boolean;
 }
 
 export const StoryChartEmbed = memo(function StoryChartEmbed({ chart }: { chart: ChartBlock }) {
@@ -53,6 +54,7 @@ export const StoryChartEmbed = memo(function StoryChartEmbed({ chart }: { chart:
 				xAxisType={xAxisType}
 				series={chart.series}
 				title={chart.title}
+				showDataLabels={chart.showDataLabels}
 			/>
 		</div>
 	);

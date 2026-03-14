@@ -26,6 +26,10 @@ export const InputSchema = z.object({
 		.describe(
 			'A concise and descriptive title of what the chart shows. Do not include the type of chart in the title or other chart configurations.',
 		),
+	show_data_labels: z
+		.boolean()
+		.describe('Show data labels (values) directly on chart elements (bars, points, etc.).')
+		.optional(),
 });
 
 export const OutputSchema = z.object({

@@ -1,5 +1,17 @@
 import React from 'react';
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, Customized, Pie, PieChart, XAxis, YAxis } from 'recharts';
+import {
+	Area,
+	AreaChart,
+	Bar,
+	BarChart,
+	CartesianGrid,
+	Customized,
+	LabelList,
+	Pie,
+	PieChart,
+	XAxis,
+	YAxis,
+} from 'recharts';
 
 import * as displayChart from './tools/display-chart';
 
@@ -29,6 +41,7 @@ export interface BuildChartProps {
 	colorFor?: (key: string, index: number) => string;
 	labelFormatter?: (value: string) => string;
 	showGrid?: boolean;
+	showDataLabels?: boolean;
 	children?: React.ReactNode[];
 	margin?: { top?: number; right?: number; bottom?: number; left?: number };
 	title?: string;
@@ -129,9 +142,61 @@ function KpiCard({ value, displayName }: { value: unknown; displayName: string }
 	);
 }
 
+interface RotatedBarLabelProps {
+	x?: number | string;
+	y?: number | string;
+	width?: number | string;
+	height?: number | string;
+	value?: string | number;
+}
+
+const RotatedBarLabel = (props: RotatedBarLabelProps) => {
+	const { x, y, width, height, value } = props;
+
+	if (x === undefined || y === undefined || width === undefined || height === undefined || value === undefined) {
+		return null;
+	}
+
+	const numX = typeof x === 'string' ? parseFloat(x) : x;
+	const numY = typeof y === 'string' ? parseFloat(y) : y;
+	const numWidth = typeof width === 'string' ? parseFloat(width) : width;
+	const numHeight = typeof height === 'string' ? parseFloat(height) : height;
+
+	const formattedValue = value !== null && Number(value) !== 0 ? Number(value).toLocaleString() : '';
+
+	if (numHeight < 20 || !formattedValue) {
+		return null;
+	}
+
+	return (
+		<text
+			x={numX + numWidth / 2}
+			y={numY + numHeight / 2}
+			fill='#fff'
+			fontSize='11'
+			textAnchor='middle'
+			dominantBaseline='middle'
+			transform={`rotate(-90, ${numX + numWidth / 2}, ${numY + numHeight / 2})`}
+		>
+			{formattedValue}
+		</text>
+	);
+};
+
 function buildBarChart(props: ResolvedProps) {
-	const { data, chartType, xAxisKey, xAxisType, series, colorFor, labelFormatter, showGrid, children, margin } =
-		props;
+	const {
+		data,
+		chartType,
+		xAxisKey,
+		xAxisType,
+		series,
+		colorFor,
+		labelFormatter,
+		showGrid,
+		children,
+		margin,
+		showDataLabels,
+	} = props;
 	const isStacked = chartType === 'stacked_bar';
 
 	return (
@@ -157,14 +222,30 @@ function buildBarChart(props: ResolvedProps) {
 					stackId={isStacked ? 'stack' : undefined}
 					radius={isStacked ? (i === series.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]) : [4, 4, 4, 4]}
 					isAnimationActive={false}
-				/>
+				>
+					{showDataLabels &&
+						(isStacked ? (
+							<LabelList
+								dataKey={s.data_key}
+								position='center'
+								fontSize='11'
+								fill='#fff'
+								formatter={(value: number) =>
+									value !== null && Number(value) !== 0 ? Number(value).toLocaleString() : ''
+								}
+							/>
+						) : (
+							<LabelList dataKey={s.data_key} content={RotatedBarLabel} />
+						))}
+				</Bar>
 			))}
 		</BarChart>
 	);
 }
 
 function buildAreaChart(props: ResolvedProps) {
-	const { data, xAxisKey, xAxisType, series, colorFor, labelFormatter, showGrid, children, margin } = props;
+	const { data, xAxisKey, xAxisType, series, colorFor, labelFormatter, showGrid, showDataLabels, children, margin } =
+		props;
 	return (
 		<AreaChart data={data} accessibilityLayer margin={margin}>
 			<defs>
@@ -200,7 +281,18 @@ function buildAreaChart(props: ResolvedProps) {
 					stroke={colorFor(s.data_key, i)}
 					fill={`url(#grad-${i})`}
 					isAnimationActive={false}
-				/>
+				>
+					{showDataLabels && (
+						<LabelList
+							dataKey={s.data_key}
+							position='top'
+							offset={4}
+							fontSize='11'
+							fill='#374151'
+							formatter={(value: number) => (value !== null && value !== 0 ? value.toLocaleString() : '')}
+						/>
+					)}
+				</Area>
 			))}
 		</AreaChart>
 	);
