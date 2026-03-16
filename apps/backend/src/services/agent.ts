@@ -186,13 +186,15 @@ class AgentManager {
 		private readonly _agentTools: AgentTools,
 		private readonly _toolContext: ToolContext,
 	) {
+		const stopEarlyOnFollowUps = this._modelSelection.modelId !== 'gpt-5.4';
+
 		this._agent = new ToolLoopAgent({
 			model: this._modelConfig.model,
 			providerOptions: this._modelConfig.providerOptions,
 			tools: this._agentTools,
 			maxOutputTokens: MAX_OUTPUT_TOKENS,
 			prepareStep: async ({ messages }) => this._prepareStep(messages),
-			stopWhen: [hasToolCall('suggest_follow_ups')],
+			stopWhen: stopEarlyOnFollowUps ? [hasToolCall('suggest_follow_ups')] : [],
 			experimental_context: this._toolContext,
 		});
 	}
