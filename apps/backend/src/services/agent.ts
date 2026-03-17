@@ -433,7 +433,7 @@ class AgentManager {
 
 		const { output } = await generateText({
 			model: modelResult.model,
-			system: 'Generate a short, descriptive title (3-8 words) for this conversation based on the user message. Always generate a title, no matter the input.',
+			system: 'Generate a short, descriptive title (3-8 words) for this conversation based on the user message. Always generate a title, no matter the input. Only capitalize the first letter of the title and nouns.',
 			messages: [
 				{
 					role: 'user',

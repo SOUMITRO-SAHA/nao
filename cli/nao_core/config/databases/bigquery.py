@@ -37,10 +37,6 @@ def _bq_escape_quoted_identifier(name: object) -> str:
     return value
 
 
-def _bq_ident(name: object) -> str:
-    return f"`{_bq_escape_quoted_identifier(name)}`"
-
-
 def _bq_path(*parts: object) -> str:
     escaped = ".".join(_bq_escape_quoted_identifier(p) for p in parts)
     return f"`{escaped}`"
