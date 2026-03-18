@@ -79,38 +79,14 @@ describe('SystemPrompt timezone rendering', () => {
 });
 
 describe('Clarification behavior', () => {
-	it('includes clarification instructions section', () => {
+	it('includes instruction to ask targeted clarifying questions in Persona', () => {
 		const markdown = renderToMarkdown(SystemPrompt({}));
-		expect(markdown).toContain('Clarification & Ambiguity');
+		expect(markdown).toContain('ask 1–2 targeted clarifying questions');
 	});
 
-	it('includes instruction to ask for clarification', () => {
+	it('includes instruction rather than making assumptions when request is ambiguous', () => {
 		const markdown = renderToMarkdown(SystemPrompt({}));
-		expect(markdown).toContain('ask for clarification');
-	});
-
-	it('includes never guess or assume instruction', () => {
-		const markdown = renderToMarkdown(SystemPrompt({}));
-		expect(markdown).toContain('Never guess or assume');
-	});
-
-	it('includes common scenarios requiring clarification', () => {
-		const markdown = renderToMarkdown(SystemPrompt({}));
-		expect(markdown).toContain('Multiple databases exist');
-		expect(markdown).toContain('No date range specified');
-		expect(markdown).toContain('Ambiguous metric');
-	});
-
-	it('includes examples section', () => {
-		const markdown = renderToMarkdown(SystemPrompt({}));
-		expect(markdown).toContain('Examples');
-	});
-
-	it('includes clarification examples', () => {
-		const markdown = renderToMarkdown(SystemPrompt({}));
-		expect(markdown).toContain('Example 1: Multiple Databases');
-		expect(markdown).toContain('Example 2: Missing Date Range');
-		expect(markdown).toContain('Example 3: Ambiguous Metric');
+		expect(markdown).toContain('rather than making assumptions when the request is ambiguous');
 	});
 });
 
@@ -120,30 +96,8 @@ describe('Enhanced SQL Query Rules', () => {
 		expect(markdown).toContain('Never assume column names, table names, or database names');
 	});
 
-	it('includes instruction to ask which database when multiple exist', () => {
+	it('includes instruction to ask questions when key details are missing', () => {
 		const markdown = renderToMarkdown(SystemPrompt({}));
-		expect(markdown).toContain('always ask which database to use');
-	});
-
-	it('includes instruction to ask for date range and filters', () => {
-		const markdown = renderToMarkdown(SystemPrompt({}));
-		expect(markdown).toContain('ask for these details before executing the query');
-	});
-});
-
-describe('Enhanced Persona Section', () => {
-	it('balances efficiency with accuracy', () => {
-		const markdown = renderToMarkdown(SystemPrompt({}));
-		expect(markdown).toContain('never sacrifice accuracy for speed');
-	});
-
-	it('includes instruction to ask clarifying questions', () => {
-		const markdown = renderToMarkdown(SystemPrompt({}));
-		expect(markdown).toContain('ask 1-2 clarifying questions');
-	});
-
-	it('includes instruction rather than making wrong assumptions', () => {
-		const markdown = renderToMarkdown(SystemPrompt({}));
-		expect(markdown).toContain('rather than making wrong assumptions');
+		expect(markdown).toContain('ask questions rather than making assumptions before executing');
 	});
 });
