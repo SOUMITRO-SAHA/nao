@@ -239,12 +239,10 @@ class TeamsService {
 	}
 
 	private async _handleStreamAgent(chat: UIChat, ctx: ConversationContext): Promise<void> {
-		const agent = await agentService.create(
-			{ ...chat, userId: ctx.user!.id, projectId: this._projectId },
-			this._modelSelection,
-		);
-		ctx.modelId = agent.getModelId();
+		const stream = await this._createAgentStream(chat, ctx);
 		const stopCard = await ctx.thread.post(createStopButtonCard());
+
+		await this._readStreamAndUpdateMessage(stream, ctx);
 
 		await stopCard.delete();
 		await this._lastCompletionCard.get(ctx.thread.id)?.card.delete();
@@ -260,6 +258,18 @@ class TeamsService {
 			source: 'teams',
 			domain_host: new URL(this._redirectUrl).host,
 		});
+	}
+
+	private async _createAgentStream(
+		chat: UIChat,
+		ctx: ConversationContext,
+	): Promise<ReadableStream<InferUIMessageChunk<UIMessage>>> {
+		const agent = await agentService.create(
+			{ ...chat, userId: ctx.user!.id, projectId: this._projectId },
+			this._modelSelection,
+		);
+		ctx.modelId = agent.getModelId();
+		return agent.stream(chat.messages, { provider: 'teams', timezone: ctx.timezone });
 	}
 
 	private async _readStreamAndUpdateMessage(
