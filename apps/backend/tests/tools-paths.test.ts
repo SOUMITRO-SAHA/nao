@@ -248,9 +248,9 @@ describe('isWithinProjectFolder', () => {
 
 		it('returns false for sibling with matching prefix', async () => {
 			const { isWithinProjectFolder } = await loadTools('win32');
-			expect(
-				isWithinProjectFolder('C:\\Users\\user\\project-other\\file', 'C:\\Users\\user\\project'),
-			).toBe(false);
+			expect(isWithinProjectFolder('C:\\Users\\user\\project-other\\file', 'C:\\Users\\user\\project')).toBe(
+				false,
+			);
 		});
 
 		it('returns false for different drive', async () => {
