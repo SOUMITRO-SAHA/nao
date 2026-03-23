@@ -103,6 +103,7 @@ jobs:
                           -e "DEFAULT_USER_ROLE=admin" \
                           -e "NOTION_API_KEY=something-random" \
                           -e "OPENAI_API_KEY=${{ secrets.PREVIEW_OPENAI_API_KEY }}" \
+                          -e "POSTHOG_DISABLED=true" \
                           "$PREVIEW_IMAGE"
 
                       # Wait for container to be healthy
