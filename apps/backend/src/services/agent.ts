@@ -236,14 +236,6 @@ class AgentManager {
 		let error: unknown = undefined;
 		let result: StreamTextResult<AgentTools, never> | undefined;
 
-		const debugWriteMessages = async (uiMessages: UIMessage[]) => {
-			const { writeFile } = await import('node:fs/promises');
-			const path = new URL('debug-ui-messages.json', `file://${process.cwd()}/`).pathname;
-			await writeFile(path, JSON.stringify(uiMessages, null, 2));
-			console.log(`[debug] wrote ${uiMessages.length} uiMessages to ${path}`);
-		};
-		debugWriteMessages(uiMessages);
-
 		return createUIMessageStream<UIMessage>({
 			generateId: () => crypto.randomUUID(),
 			execute: async ({ writer }) => {
